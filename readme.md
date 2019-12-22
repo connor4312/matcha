@@ -1,6 +1,6 @@
 # @c4312/matcha
 
-A modernization of [`matcha`](https://github.com/logicalparadox/matcha), powered by Benchmkark.js.
+A modernization of [`matcha`](https://github.com/logicalparadox/matcha), powered by Benchmark.js.
 
 ![Demonstration video of the matcha command line](./demo.svg)
 
