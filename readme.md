@@ -1,16 +1,16 @@
 # @c4312/matcha
 
-A modernization of [`matcha`](https://github.com/logicalparadox/matcha), powered by Benchmark.js.
+A modernization of [`matcha`](https://github.com/logicalparadox/matcha), powered by Benchmark.js. I found Matcha super useful over the years, but it has [issues with accuracy](https://github.com/logicalparadox/matcha/issues/22), doesn't support promises or work with Node 12, and is apparently abandoned. We fix those here!
 
-![Demonstration video of the matcha command line](./demo.svg)
+![Demonstration video of the matcha command line](./demo.gif)
 
 ## Usage
 
 ```
-npm install --global matcha
+npm install --global @c4312/matcha
 ```
 
-Then you can create a file and `bench` functions, for instance:
+Then you can create a file and `bench` functions, for instance if you have a **my-bench.js**:
 
 ```js
 const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -22,6 +22,12 @@ bench('for-of loop', () => {
     sum += v;
   }
 });
+```
+
+Then, simply run:
+
+```
+matcha my-bench.js
 ```
 
 ### Command-Line Options
