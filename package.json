@@ -1,0 +1,46 @@
+{
+  "name": "@c4312/matcha",
+  "version": "1.0.0",
+  "description": "A caffeine driven, simple command line for benchmarking",
+  "main": "index.js",
+  "bin": {
+    "matcha": "dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/connor4312/matcha.git"
+  },
+  "bugs": {
+    "url": "https://github.com/connor4312/matcha/issues"
+  },
+  "homepage": "https://github.com/connor4312/matcha#readme",
+  "scripts": {
+    "prepublishOnly": "npm run compile",
+    "compile": "tsc",
+    "watch": "tsc --watch",
+    "test:fmt": "prettier --list-different \"src/**/*.ts\" \"*.md\"",
+    "fmt": "prettier --write \"src/**/*.ts\" \"*.md\""
+  },
+  "author": "Connor Peet <connor@peet.io>",
+  "license": "MIT",
+  "dependencies": {
+    "benchmark": "^2.1.4",
+    "chalk": "^3.0.0",
+    "microtime": "^3.0.0",
+    "minimist": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/benchmark": "^1.0.31",
+    "@types/microtime": "^2.1.0",
+    "@types/minimatch": "^3.0.3",
+    "@types/minimist": "^1.2.0",
+    "@types/node": "^12.12.21",
+    "prettier": "^1.19.1",
+    "typescript": "^3.7.3"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "trailingComma": "all"
+  }
+}
