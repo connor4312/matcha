@@ -1,6 +1,6 @@
 import { benchmark } from './runner';
 import { IOptions } from './suite';
-import { NoopReporter } from './reporters/noop';
+import { GatherReporter } from './reporters/gather';
 import { expect } from 'chai';
 import { promisify } from 'util';
 
@@ -13,7 +13,7 @@ describe('runner', () => {
   it('sets options correctly', async () => {
     let results: [string, IOptions][] = [];
     await benchmark({
-      reporter: new NoopReporter(),
+      reporter: new GatherReporter(),
       runFunction(name, options) {
         const { fn, onComplete, onStart, ...rest } = options;
         results.push([name, rest]);
@@ -41,7 +41,7 @@ describe('runner', () => {
     let results: string[] = [];
     await benchmark({
       grep: '^a',
-      reporter: new NoopReporter(),
+      reporter: new GatherReporter(),
       runFunction(name) {
         results.push(name);
         return Promise.resolve();
@@ -60,7 +60,7 @@ describe('runner', () => {
   it('handles lifecycle correctly', async () => {
     let results: string[] = [];
     await benchmark({
-      reporter: new NoopReporter(),
+      reporter: new GatherReporter(),
       runFunction() {
         results.push('bench');
         return Promise.resolve();
@@ -108,7 +108,7 @@ describe('runner', () => {
   it('runs e2e', async function() {
     this.timeout(10000);
 
-    const reporter = new NoopReporter();
+    const reporter = new GatherReporter();
     const obj1 = { a: 1, b: 2, c: 3 };
     const obj2 = { ...obj1 };
     await benchmark({
