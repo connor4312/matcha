@@ -1,6 +1,17 @@
 import { IReporter } from './reporters';
-import { MatchaSuite, IOptions, RunFunction } from './suite';
-import { MaybeAsync, runMaybeAsync } from './async';
+import { MatchaSuite, RunFunction, IBenchmarkCase } from './suite';
+import { MaybeAsync } from './async';
+import { IOptions, Options } from './options';
+import { reporterMiddleware } from './middleware/reporter';
+
+/**
+ * A middleware function for the benchmark. Invoked directly before the
+ * benchmark starts running.
+ */
+export type Middleware = (
+  benchmark: Readonly<IBenchmarkCase>,
+  next: (options: Readonly<IBenchmarkCase>) => Promise<void>,
+) => Promise<void>;
 
 /**
  * Options passed to the `benchmark` function.
@@ -13,6 +24,12 @@ export interface IBenchmarkOptions {
   runFunction?: RunFunction;
 
   /**
+   * Optional profiler instance that can be used to run CPU profiles
+   * on benchmarks.
+   */
+  middleware?: Middleware[];
+
+  /**
    * Takes the benchmark API, and should register all benchmarks using
    * the `api.bench()` method before turning.
    */
@@ -22,11 +39,6 @@ export interface IBenchmarkOptions {
    * Reporter to use for returning results.
    */
   reporter: IReporter;
-
-  /**
-   * Optionally, only run benchmarks that match the given pattern.
-   */
-  grep?: string;
 }
 
 /**
@@ -60,80 +72,25 @@ export interface IBenchmarkApi {
   retain(value: unknown): void;
 }
 
-/**
- * Managed merge of two sets of options, making sure to chain
- * lifecycle events as needed.
- */
-const assignOptions = (left: IOptions, right?: IOptions): IOptions => {
-  if (!right) {
-    return left;
-  }
-
-  for (const key of Object.keys(right) as (keyof IOptions)[]) {
-    switch (key) {
-      case 'setup':
-        {
-          const outerFn = left[key];
-          const innerFn = right[key];
-          left[key] = async () => {
-            outerFn && (await runMaybeAsync(outerFn));
-            innerFn && (await runMaybeAsync(innerFn));
-          };
-        }
-        break;
-      case 'teardown':
-        {
-          const outerFn = left[key];
-          const innerFn = right[key];
-          left[key] = async () => {
-            innerFn && (await runMaybeAsync(innerFn));
-            outerFn && (await runMaybeAsync(outerFn));
-          };
-        }
-        break;
-      case 'onComplete':
-      case 'onCycle':
-      case 'onStart':
-      case 'onError':
-      case 'onReset': {
-        const outerFn = left[key];
-        const innerFn = right[key];
-        left[key] = async (arg: any) => {
-          innerFn?.(arg);
-          outerFn?.(arg);
-        };
-      }
-      default:
-        (left as any)[key] = right[key];
-    }
-  }
-
-  return left;
-};
-
 export async function benchmark({
   runFunction,
   prepare,
   reporter,
-  grep,
+  middleware,
 }: IBenchmarkOptions): Promise<void> {
   const suite = new MatchaSuite(runFunction);
   const retainSymbol = Symbol();
-  const grepRe = new RegExp(grep || '', 'i');
+  let scope = { prefix: '', middleware: middleware?.slice() ?? [], options: Options.empty };
 
-  let scope = { prefix: '', options: <IOptions>{} };
+  scope.middleware.push(reporterMiddleware(reporter));
 
   await prepare({
     bench(name, fn, options?) {
-      name = scope.prefix + name;
-      if (!grepRe.test(name)) {
-        return;
-      }
-
       suite.addCase({
-        name,
         fn,
-        options: assignOptions({ ...scope.options }, options),
+        name: scope.prefix + name,
+        middleware: scope.middleware,
+        options: scope.options.merge(options),
       });
     },
 
@@ -141,14 +98,15 @@ export async function benchmark({
       const previous = scope;
       scope = {
         prefix: previous.prefix + name + '#',
-        options: assignOptions({ ...previous.options }, options),
+        middleware: previous.middleware,
+        options: previous.options.merge(options),
       };
       fn();
       scope = previous;
     },
 
     set<K extends keyof IOptions>(key: K, value: IOptions[K]) {
-      assignOptions(scope.options, { [key]: value });
+      scope.options = scope.options.merge({ [key]: value });
     },
 
     retain(value) {
@@ -160,5 +118,6 @@ export async function benchmark({
     },
   });
 
-  await suite.run(reporter);
+  await suite.run();
+  reporter.onComplete();
 }

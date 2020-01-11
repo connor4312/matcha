@@ -2,10 +2,20 @@
 
 import program from 'commander';
 import { reporters } from './reporters';
-import { benchmark, IBenchmarkOptions } from './runner';
+import { benchmark, Middleware } from './runner';
 import { resolve } from 'path';
+import { grepMiddleware } from './middleware/grep';
+import { cpuProfiler } from './middleware/cpu-profiler';
+import { IBenchmarkCase } from './suite';
+import { promisify } from 'util';
+import { writeFile } from 'fs';
 
-type IArgs = { reporters?: boolean; reporter: string } & Omit<IBenchmarkOptions, 'reporter'>;
+interface IArgs {
+  reporters?: boolean;
+  reporter: string;
+  grep: string;
+  cpuProfile?: string | true;
+}
 
 const { version } = require('../package.json');
 
@@ -13,9 +23,13 @@ const args = program
   .arguments('<file>')
   .name('matcha')
   .version(version)
-  .option('-g, --grep <pattern>', 'run a subset of benchmarks', '')
-  .option('-R, --reporter <reporter>', 'specify the reporter to use', 'pretty')
-  .option('--reporters', 'display available reporters')
+  .option('-g, --grep <pattern>', 'Run a subset of benchmarks', '')
+  .option('-R, --reporter <reporter>', 'Specify the reporter to use', 'pretty')
+  .option(
+    '--cpu-profile [pattern]',
+    'Run on all tests, or those matching the regex. Saves a .cpuprofile file that can be opened in the Chrome devtools.',
+  )
+  .option('--reporters', 'Display available reporters')
   .parse(process.argv)
   .opts() as IArgs;
 
@@ -36,8 +50,19 @@ function benchmarkFiles() {
     program.help();
   }
 
+  const middleware: Middleware[] = [];
+  if (args.grep) {
+    middleware.push(grepMiddleware(new RegExp(args.grep, 'i')));
+  }
+
+  if (args.cpuProfile === true) {
+    middleware.push(cpuProfiler(writeProfile));
+  } else if (args.cpuProfile) {
+    middleware.push(cpuProfiler(writeProfile, new RegExp(args.cpuProfile, 'i')));
+  }
+
   benchmark({
-    ...args,
+    middleware,
     reporter: reporterFactory.start(),
     prepare: api => {
       Object.assign(global, api);
@@ -46,6 +71,11 @@ function benchmarkFiles() {
       }
     },
   });
+}
+
+function writeProfile(bench: Readonly<IBenchmarkCase>, profile: object) {
+  const safeName = bench.name.replace(/[^a-z0-9]/gi, '-');
+  promisify(writeFile)(`${safeName}.cpuprofile`, JSON.stringify(profile));
 }
 
 function printReporters() {

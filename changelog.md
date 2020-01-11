@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0 2020-01-11
+
+- feat: add a `--cpu-profile` option for tests
+- refactor: move to a middleware model for the internal api
+
 ## 1.1.0 2020-01-10
 
 - feat: allow async setup and teardown methods

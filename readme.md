@@ -37,9 +37,11 @@ Usage: matcha [options] <file>
 
 Options:
   -V, --version              output the version number
-  -g, --grep <pattern>       run a subset of benchmarks (default: "")
-  -R, --reporter <reporter>  specify the reporter to use (default: "pretty")
-  --reporters                display available reporters
+  -g, --grep <pattern>       Run a subset of benchmarks (default: "")
+  -R, --reporter <reporter>  Specify the reporter to use (default: "pretty")
+  --cpu-profile [pattern]    Run on all tests, or those matching the regex.
+                             Saves a .cpuprofile file that can be opened in the Chrome devtools.
+  --reporters                Display available reporters
   -h, --help                 output usage information
 ```
 

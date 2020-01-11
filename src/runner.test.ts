@@ -1,8 +1,9 @@
 import { benchmark } from './runner';
-import { IOptions } from './suite';
+import { IOptions } from './options';
 import { GatherReporter } from './reporters/gather';
 import { expect } from 'chai';
 import { promisify } from 'util';
+import { grepMiddleware } from './middleware/grep';
 
 const timeout = promisify(setTimeout);
 
@@ -15,8 +16,8 @@ describe('runner', () => {
     await benchmark({
       reporter: new GatherReporter(),
       runFunction(name, options) {
-        const { fn, onComplete, onStart, ...rest } = options;
-        results.push([name, rest]);
+        const { maxTime, initCount } = options;
+        results.push([name, { maxTime, initCount }]);
         return Promise.resolve();
       },
       prepare(api) {
@@ -31,8 +32,8 @@ describe('runner', () => {
     });
 
     expect(results).to.deep.equal([
-      ['a', { maxTime: 1 }],
-      ['aaa', { maxTime: 1 }],
+      ['a', { maxTime: 1, initCount: undefined }],
+      ['aaa', { maxTime: 1, initCount: undefined }],
       ['aSuite#c', { maxTime: 1, initCount: 100 }],
     ]);
   });
@@ -40,7 +41,7 @@ describe('runner', () => {
   it('greps for tests', async () => {
     let results: string[] = [];
     await benchmark({
-      grep: '^a',
+      middleware: [grepMiddleware(/^a/)],
       reporter: new GatherReporter(),
       runFunction(name) {
         results.push(name);
@@ -122,6 +123,7 @@ describe('runner', () => {
 
     expect(reporter.results).to.have.lengthOf(2);
     for (const result of reporter.results) {
+      expect(result.error).to.be.undefined;
       expect(result.hz).to.be.greaterThan(1);
     }
   });

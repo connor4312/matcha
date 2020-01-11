@@ -20,6 +20,7 @@
     "watch": "tsc --watch",
     "test:fmt": "prettier --list-different \"src/**/*.ts\" \"*.md\"",
     "test:unit": "mocha dist/**/*.test.js",
+    "test": "npm run test:unit && npm run test:fmt",
     "fmt": "prettier --write \"src/**/*.ts\" \"*.md\""
   },
   "author": "Connor Peet <connor@peet.io>",
