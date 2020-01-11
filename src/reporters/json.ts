@@ -5,7 +5,7 @@ export const jsonFactory: IReporterFactory = {
   start: () => new JsonReporter(process.stdout),
 };
 
-class JsonReporter implements IReporter {
+export class JsonReporter implements IReporter {
   private printed = 0;
 
   constructor(private readonly out: NodeJS.WriteStream) {}

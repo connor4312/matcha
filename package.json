@@ -2,9 +2,9 @@
   "name": "@c4312/matcha",
   "version": "1.0.0",
   "description": "A caffeine driven, simple command line for benchmarking",
-  "main": "index.js",
+  "main": "dist/index.js",
   "bin": {
-    "matcha": "dist/index.js"
+    "matcha": "dist/cli.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
     "compile": "tsc",
     "watch": "tsc --watch",
     "test:fmt": "prettier --list-different \"src/**/*.ts\" \"*.md\"",
+    "test:unit": "mocha dist/**/*.test.js",
     "fmt": "prettier --write \"src/**/*.ts\" \"*.md\""
   },
   "author": "Connor Peet <connor@peet.io>",
@@ -26,13 +27,18 @@
   "dependencies": {
     "benchmark": "^2.1.4",
     "chalk": "^3.0.0",
-    "microtime": "^3.0.0",
-    "minimist": "^1.2.0"
+    "commander": "^4.1.0",
+    "microtime": "^3.0.0"
   },
   "devDependencies": {
     "@types/benchmark": "^1.0.31",
+    "@types/chai": "^4.2.7",
+    "@types/commander": "^2.12.2",
     "@types/minimist": "^1.2.0",
+    "@types/mocha": "^5.2.7",
     "@types/node": "^12.12.21",
+    "chai": "^4.2.0",
+    "mocha": "^7.0.0",
     "prettier": "^1.19.1",
     "typescript": "^3.7.3"
   },

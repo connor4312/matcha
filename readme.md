@@ -33,19 +33,14 @@ matcha my-bench.js
 ### Command-Line Options
 
 ```
-@c4312/matcha 1.0.0
-
-Usage: matcha <options> <files>
+Usage: matcha [options] <file>
 
 Options:
-
-  -h, --help               view matcha usage information
-  -v, --version            view matcha version
-  -g, --grep [pattern]     run a subset of benchmarks
-  -R, --reporter [pretty]  specify the reporter to use
-  --reporters              display available reporters
-
-Run a suite of benchmarks.
+  -V, --version              output the version number
+  -g, --grep <pattern>       run a subset of benchmarks (default: "")
+  -R, --reporter <reporter>  specify the reporter to use (default: "pretty")
+  --reporters                display available reporters
+  -h, --help                 output usage information
 ```
 
 ## Async Benchmarks
@@ -59,9 +54,63 @@ bench('promisifed fs', async () => await readFileAsync(__filename));
 
 ## Settings
 
-You can set any [benchmark.js option](https://benchmarkjs.com/docs#options) via the `set()` helper.
+You can set any [benchmark.js option](https://benchmarkjs.com/docs#options) via the `set()` helper. You can also have async setup and teardown methods.
 
 ```js
+// in a promise:
+set('setup', async () => {
+  await waitUntilPageIsLoaded();
+});
+
+// or a callback:
+set('teardown', callback => closePage(callback));
+
+// as well as base options:
 set('maxTime', 1);
 set('minSamples', 2000);
+```
+
+## Nested Suites
+
+Multiple benchmark suites can be nested. Options, including setup and teardown, are inherited, chained, and overridden.
+
+```js
+set('setup', globalPrepare);
+
+// globalPrepare() run before:
+bench('a', runA);
+
+// globalPrepare() and nestedPrepare() run before
+// these, and they run for 1 second at most:
+suite('nested', () => {
+  set('setup', nestedPrepare);
+  set('maxTime', 1);
+  bench('b', runB);
+});
+```
+
+## API
+
+You can use the Matcha API programmatically:
+
+```js
+const { GatherReporter, benchmark } = require('@c4312/benchmark');
+
+// A reporter that just stores results in an array:
+const reporter = new GatherReporter();
+
+await benchmark({
+  reporter,
+  prepare(api) {
+    // The standard API as described above!
+    api.bench('myFunction', fn);
+
+    // This function may be async and return a promise,
+    // which we'll wait for before we start benchmarking.
+  },
+});
+
+for (const result of reporter.results) {
+  console.log('Benchmark', result.name, 'runs at', result.hz, 'ops/sec');
+}
 ```

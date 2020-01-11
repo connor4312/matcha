@@ -1,4 +1,4 @@
-import OriginalBenchmark, { Suite } from 'benchmark';
+import OriginalBenchmark from 'benchmark';
 import { csvFactory } from './csv';
 import { jsonFactory } from './json';
 import { prettyFactory } from './pretty';
@@ -18,7 +18,7 @@ export interface IReporter {
 
 export interface IReporterFactory {
   readonly description: string;
-  start(suite: Suite): IReporter;
+  start(): IReporter;
 }
 
 export const reporters: { [key: string]: IReporterFactory } = {

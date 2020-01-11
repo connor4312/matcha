@@ -5,7 +5,7 @@ export const csvFactory: IReporterFactory = {
   start: () => new CsvReporter(process.stdout),
 };
 
-class CsvReporter implements IReporter {
+export class CsvReporter implements IReporter {
   constructor(private readonly out: NodeJS.WriteStream) {
     out.write(['name', 'hz', 'mean', 'deviation', 'iterations'].join(',') + '\r\n');
   }
