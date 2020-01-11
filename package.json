@@ -1,6 +1,6 @@
 {
   "name": "@c4312/matcha",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A caffeine driven, simple command line for benchmarking",
   "main": "dist/index.js",
   "bin": {
