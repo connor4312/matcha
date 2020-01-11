@@ -80,7 +80,7 @@ function returnsPromiseLike(fn: () => Promise<void> | undefined): fn is () => Pr
 
 function canRunBench(args: IArgs, name: string) {
   const pattern = args.g || args.grep || '';
-  return name.toLowerCase().includes(pattern.toLowerCase());
+  return new RegExp(pattern, 'i').test(name);
 }
 
 function benchmark(args: IArgs) {
