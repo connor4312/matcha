@@ -1,6 +1,7 @@
 import OriginalBenchmark from 'benchmark';
 import { csvFactory } from './csv';
 import { jsonFactory } from './json';
+import { jsonSummaryFactory } from './json-summary';
 import { prettyFactory } from './pretty';
 
 export interface Benchmark extends OriginalBenchmark {
@@ -25,4 +26,5 @@ export const reporters: { [key: string]: IReporterFactory } = {
   csv: csvFactory,
   json: jsonFactory,
   pretty: prettyFactory,
+  'json-summary': jsonSummaryFactory,
 };

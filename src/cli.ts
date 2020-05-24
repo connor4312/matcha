@@ -79,7 +79,7 @@ function writeProfile(bench: Readonly<IBenchmarkCase>, profile: object) {
 }
 
 function printReporters() {
-  Object.keys(reporters).map(key => {
-    process.stdout.write(`${key.padStart(15)} - ${reporters[key].description}`);
-  });
+  for (const [name, reporter] of Object.entries(reporters)) {
+    process.stdout.write(`${name.padStart(15)} - ${reporter.description}\r\n`);
+  }
 }
