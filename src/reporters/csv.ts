@@ -1,4 +1,5 @@
 import { Benchmark, IReporter, IReporterFactory } from '.';
+import { EOL } from 'os';
 
 export const csvFactory: IReporterFactory = {
   description: 'Outputs stats as CSV',
@@ -7,7 +8,7 @@ export const csvFactory: IReporterFactory = {
 
 export class CsvReporter implements IReporter {
   constructor(private readonly out: NodeJS.WriteStream) {
-    out.write(['name', 'hz', 'mean', 'deviation', 'iterations'].join(',') + '\r\n');
+    out.write(['name', 'hz', 'mean', 'deviation', 'iterations'].join(',') + EOL);
   }
 
   onStartCycle() {
@@ -26,7 +27,7 @@ export class CsvReporter implements IReporter {
         benchmark.stats.mean.toFixed(8),
         benchmark.stats.deviation.toFixed(8),
         benchmark.count,
-      ].join(',') + '\r\n',
+      ].join(',') + EOL,
     );
   }
 

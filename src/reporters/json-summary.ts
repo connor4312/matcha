@@ -1,4 +1,5 @@
 import { Benchmark, IReporter, IReporterFactory } from '.';
+import { EOL } from 'os';
 
 type JsonResult = {
   name: string;
@@ -77,6 +78,6 @@ export class JsonSummaryReporter implements IReporter {
     };
 
     this.out.write(JSON.stringify(result));
-    this.out.write('\r\n');
+    this.out.write(EOL);
   }
 }

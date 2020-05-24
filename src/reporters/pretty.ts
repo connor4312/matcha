@@ -1,6 +1,7 @@
 import { Benchmark, IReporter, IReporterFactory } from '.';
 import chalk from 'chalk';
 import { moveCursor, clearLine } from 'readline';
+import { EOL } from 'os';
 
 export const prettyFactory: IReporterFactory = {
   description: 'Pretty prints results to the console',
@@ -14,12 +15,12 @@ export class PrettyReporter implements IReporter {
   private readonly results: Benchmark[] = [];
 
   constructor(private readonly out: NodeJS.WriteStream) {
-    this.out.write('\r\n');
+    this.out.write(EOL);
   }
 
   onStartCycle(benchmark: Benchmark) {
     this.out.write(chalk.yellow('running > '.padStart(center)) + chalk.gray(benchmark.name));
-    this.out.write('\r\n');
+    this.out.write(EOL);
   }
 
   onFinishCycle(newResult: Benchmark) {
@@ -48,7 +49,7 @@ export class PrettyReporter implements IReporter {
         );
       }
 
-      this.out.write('\r\n');
+      this.out.write(EOL);
     }
   }
 
@@ -63,10 +64,10 @@ export class PrettyReporter implements IReporter {
     cases.sort((a, b) => b.hz - a.hz);
     const elapsed = cases.reduce((n, c) => n + c.times.elapsed, 0);
 
-    this.out.write('\r\n');
-    this.out.write(`  ${chalk.grey('Benches')}: ${cases.length}\r\n`);
-    this.out.write(`  ${chalk.grey('Fastest')}: ${(cases[0] as any)?.name}\r\n`);
-    this.out.write(`  ${chalk.grey('Elapsed')}: ${this.numberFormat.format(elapsed)}s\r\n`);
-    this.out.write('\r\n');
+    this.out.write(EOL);
+    this.out.write(`  ${chalk.grey('Benches')}: ${cases.length}${EOL}`);
+    this.out.write(`  ${chalk.grey('Fastest')}: ${(cases[0] as any)?.name}${EOL}`);
+    this.out.write(`  ${chalk.grey('Elapsed')}: ${this.numberFormat.format(elapsed)}s${EOL}`);
+    this.out.write(EOL);
   }
 }
