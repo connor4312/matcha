@@ -39,6 +39,7 @@ export class JsonSummaryReporter implements IReporter {
     let minHz = Infinity;
     let maxHz = 0;
     let elapsed = 0;
+    let fastest: Benchmark | undefined;
 
     for (const benchmark of this.results) {
       elapsed += benchmark.times.elapsed;
@@ -47,24 +48,23 @@ export class JsonSummaryReporter implements IReporter {
         errors.push({ name: benchmark.name, error: benchmark.error.stack });
       } else {
         minHz = Math.min(minHz, benchmark.hz);
-        maxHz = Math.max(maxHz, benchmark.hz);
+
+        if (benchmark.hz > maxHz) {
+          maxHz = benchmark.hz;
+          fastest = benchmark;
+        }
+
         benchmarks.push(benchmark);
       }
     }
 
-    let fastest: Benchmark | undefined;
-
     for (const benchmark of benchmarks) {
       const factor = benchmark.hz / minHz;
-
-      if (!fastest && benchmark.hz === maxHz) {
-        fastest = benchmark;
-      }
 
       results.push({
         name: benchmark.name,
         factor: Number(factor.toFixed(2)),
-        ops: Math.trunc(benchmark.hz),
+        ops: Number(benchmark.hz.toPrecision(3)),
         fastest: benchmark === fastest,
       });
     }
