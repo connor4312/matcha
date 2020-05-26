@@ -9,6 +9,7 @@ import { cpuProfiler } from './middleware/cpu-profiler';
 import { IBenchmarkCase } from './suite';
 import { promisify } from 'util';
 import { writeFile } from 'fs';
+import { EOL } from 'os';
 
 interface IArgs {
   reporters?: boolean;
@@ -79,7 +80,7 @@ function writeProfile(bench: Readonly<IBenchmarkCase>, profile: object) {
 }
 
 function printReporters() {
-  Object.keys(reporters).map(key => {
-    process.stdout.write(`${key.padStart(15)} - ${reporters[key].description}`);
-  });
+  for (const [name, reporter] of Object.entries(reporters)) {
+    process.stdout.write(`${name.padStart(15)} - ${reporter.description}${EOL}`);
+  }
 }

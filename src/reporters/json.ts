@@ -1,4 +1,5 @@
 import { Benchmark, IReporter, IReporterFactory } from '.';
+import { EOL } from 'os';
 
 export const jsonFactory: IReporterFactory = {
   description: 'Outputs stats as raw JSON',
@@ -21,7 +22,8 @@ export class JsonReporter implements IReporter {
 
     this.out.write(
       (this.printed++ > 0 ? ',' : '[') +
-        '\r\n  ' +
+        EOL +
+        '  ' +
         JSON.stringify({
           name: benchmark.name,
           hz: benchmark.hz,
@@ -33,6 +35,6 @@ export class JsonReporter implements IReporter {
   }
 
   onComplete() {
-    this.out.write('\r\n]\r\n');
+    this.out.write(`${EOL}]${EOL}`);
   }
 }
