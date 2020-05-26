@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0 2020-05-26
+
+- feat: add a JSON summary reporter ([#2](https://github.com/connor4312/matcha/pull/2) thanks to [@chocolateboy](https://github.com/chocolateboy))
+
 ## 1.2.0 2020-01-11
 
 - feat: add a `--cpu-profile` option for tests
