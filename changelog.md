@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.1 2020-07-08
+
+- fix: publish TypeScript typings
+
 ## 1.3.0 2020-05-26
 
 - feat: add a JSON summary reporter ([#2](https://github.com/connor4312/matcha/pull/2) thanks to [@chocolateboy](https://github.com/chocolateboy))
