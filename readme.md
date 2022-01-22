@@ -96,7 +96,7 @@ suite('nested', () => {
 You can use the Matcha API programmatically:
 
 ```js
-const { GatherReporter, benchmark } = require('@c4312/benchmark');
+const { GatherReporter, benchmark } = require('@c4312/matcha');
 
 // A reporter that just stores results in an array:
 const reporter = new GatherReporter();
