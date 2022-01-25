@@ -1,4 +1,4 @@
-# @c4312/matcha
+# @c4312/matcha [![CI](https://github.com/connor4312/matcha/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/connor4312/matcha/actions/workflows/ci.yml?query=branch%3Amaster)
 
 A modernization of [`matcha`](https://github.com/logicalparadox/matcha), powered by Benchmark.js. I found Matcha super useful over the years, but it has [issues with accuracy](https://github.com/logicalparadox/matcha/issues/22), doesn't support promises or work with Node 12, and is apparently abandoned. We fix those here!
 

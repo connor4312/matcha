@@ -43,6 +43,9 @@
     "prettier": "^1.19.1",
     "typescript": "^3.7.3"
   },
+  "engines": {
+    "node": ">=8"
+  },
   "prettier": {
     "printWidth": 100,
     "singleQuote": true,
