@@ -39,7 +39,7 @@
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.12.21",
     "chai": "^4.2.0",
-    "mocha": "^7.0.0",
+    "mocha": "^10.2.0",
     "prettier": "^1.19.1",
     "typescript": "^3.7.3"
   },
